@@ -2,36 +2,33 @@ from bs4 import BeautifulSoup
 import requests
 import csv
 
-source = requests.get('http://coreyms.com').text
+for i in range(1,4):
+    source = requests.get(f'https://www.reuters.com/news/archive/lgbt-news?view=page&page=${i}&pageSize=10').text
 
-soup = BeautifulSoup(source, 'lxml')
+    soup = BeautifulSoup(source, 'lxml')
+    soup = soup.find('div', class_='column1')
 
-csv_file = open('crm_scrape.csv','w')
-csv_writer = csv.writer(csv_file)
-csv_writer.writerow(['headline','summary','video_link'])
+    # csv_file = open('crm_scrape.csv','w')
+    # csv_writer = csv.writer(csv_file)
+    # csv_writer.writerow(['headline','summary','video_link'])
 
-for article in soup.find_all('article'):
-    headline = article.h2.a.text
-    print(headline)
+    # for article in soup.find_all('article'):
+    for article in soup.find_all('article'):
+        photo = article.find('div', class_='story-photo').a.img['src']
+        print(photo)
 
-    summary = article.find('div', class_='entry-content').p.text
-    print(summary)
+        content = article.find('div', class_='story-content')
+        headline = content.a.h3.text.strip()
+        print(headline)
 
-    try:
-        vid_src = article.find('iframe', class_='youtube-player')['src']
+        summary = content.p.text.strip()
+        print(summary)
 
-        vid_id = vid_src.split('/')[4]
-        vid_id = vid_id.split('?')[0]
+        time = content.time.span.text
+        print(time)
+        print()
 
-        yt_link = f'https://youtube.com/watch?v={vid_id}'
-        
-    except Exception as e:
-        yt_link = None
 
-    print(yt_link)
-    print()
-
-    csv_writer.writerow([headline, summary, yt_link])
-
-csv_file.close()
+# csv_writer.writerow([headline, summary, yt_link])
+# csv_file.close()
 
