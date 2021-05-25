@@ -18,6 +18,8 @@ for i in range(1,4):
         print(photo)
 
         content = article.find('div', class_='story-content')
+        url = 'https://www.reuters.com' + content.a['href']
+        print(url)
         headline = content.a.h3.text.strip()
         print(headline)
 
