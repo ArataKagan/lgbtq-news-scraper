@@ -22,7 +22,6 @@ import csv
     #     print(url)
     #     headline = content.a.h3.text.strip()
     #     print(headline)
-
     #     summary = content.p.text.strip()
     #     print(summary)
 
@@ -37,7 +36,22 @@ source = requests.get('https://www.lgbtqnation.com/news/').text
 soup = BeautifulSoup(source, 'lxml')
 soup = soup.find('div', class_='main-col')
 
-item = soup.find('li', class_='list-item')
-headline = item.h3.a.text
-print(headline)
+for item in soup.find_all('li', class_='list-item'):
+
+    photo = item.img['src']
+    print(photo)
+    headline = item.h3.a.text
+    print(headline)
+    url_link = item.h3.a['href']
+    print(url_link)
+
+    excerpt = item.find('div', class_='excerpt')
+    summary = excerpt.p.text
+    print(summary)
+
+    time = item.find('div', class_='post-meta')
+    time = time.time.text
+    print(time)
+
+    print()
 
