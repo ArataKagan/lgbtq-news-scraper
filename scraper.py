@@ -51,7 +51,11 @@ for i in range(1, 4):
 
         print(article)
 
-        db.news.insert_one(article)
+        db.news.update_one(
+            {"headline": headline},
+            {"$setOnInsert": article},
+            upsert=True
+        )
 
         print()
 
