@@ -13,34 +13,31 @@ print(MONGO_PW)
 
 client = pymongo.MongoClient(
     f"mongodb+srv://admin:{MONGO_PW}@lgbtq-news.acrch.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-db = client.test
+db = client.news
+
 print(db)
 
 # print(os.environ.get('USER'))
-
+reuter = {}
+lgbtqNation = {}
 
 for i in range(1, 4):
+    print("page number: ", i)
+
     source = requests.get(
-        f'https://www.reuters.com/news/archive/lgbt-news?view=page&page=${i}&pageSize=10').text
+        f'https://www.reuters.com/news/archive/lgbt-news?view=page&page={i}&pageSize=10').text
 
     soup = BeautifulSoup(source, 'lxml')
     soup = soup.find('div', class_='column1')
 
     for article in soup.find_all('article'):
         photo = article.find('div', class_='story-photo').a.img['src']
-        # print(photo)
-
         content = article.find('div', class_='story-content')
         url = 'https://www.reuters.com' + content.a['href']
-        # print(url)
         headline = content.a.h3.text.strip()
-        # print(headline)
+        print(headline)
         summary = content.p.text.strip()
-        # print(summary)
-
         time = content.time.span.text
-        # print(time)
-
         article = {
             "photo": photo,
             "url": url,
@@ -48,8 +45,6 @@ for i in range(1, 4):
             "summary": summary,
             "time": time
         }
-
-        print(article)
 
         db.news.update_one(
             {"headline": headline},
